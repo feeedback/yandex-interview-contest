@@ -1,27 +1,25 @@
 const readline = require('readline');
-const fs = require('fs');
 
-const input = fs.createReadStream('input.txt');
-const output = fs.createWriteStream('output.txt');
-const rl = readline.createInterface({ input, terminal: false });
+const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
-let result = '';
+const result = [];
+let lineCount = 0;
 
-rl.once('line', () => {
-    let lastItem;
+rl.once('line', (line1) => {
+  let lastItem = null;
+  const length = Number(line1.toString().trim());
 
-    rl.on('line', (line) => {
-        if (line !== lastItem) {
-            result += `${line}\n`;
-        }
-        if (result.length > 100) {
-            output.write(`${result}\n`);
-            result = '';
-        }
-        lastItem = line;
-    });
-
-    rl.on('close', () => {
-        output.write(`${result}\n`);
-    });
+  rl.on('line', (lineRaw) => {
+    const line = lineRaw.toString().trim();
+    if (lineCount < length && line !== lastItem) {
+      result.push(result);
+      lastItem = line;
+    }
+    lineCount += 1;
+  });
 });
+
+rl.on('close', () => {
+  process.stdout.write(Array.isArray(result) ? result.join('\n') : String(result));
+});
+
