@@ -4,7 +4,7 @@ const fs = require('fs');
 const input = fs.createReadStream('input.txt');
 const rl = readline.createInterface({ input, terminal: false });
 
-const result = [];
+// const result = [];
 let lineCount = 0;
 
 rl.once('line', (line1) => {
@@ -14,17 +14,17 @@ rl.once('line', (line1) => {
   rl.on('line', (lineRaw) => {
     const line = lineRaw.toString().trim();
     if (lineCount < length && line !== lastItem) {
-      result.push(line);
+      console.log(`${line}\n`);
       lastItem = line;
     }
     lineCount += 1;
   });
 });
 
-rl.on('close', () => {
-  console.log({ result });
-  process.stdout.write(Array.isArray(result) ? result.join('\n') : String(result));
-});
+// rl.on('close', () => {
+//   // console.log({ result });
+//   // process.stdout.write(Array.isArray(result) ? result.join('\n') : String(result));
+// });
 // (async () => {
 //   // const inputLines = await input(1);
 //   const inputLines = fs.readFileSync('input.txt', 'utf8').split('\r\n');
