@@ -1,6 +1,8 @@
 const readline = require('readline');
+const fs = require('fs');
 
-const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+const input = fs.createReadStream('input.txt');
+const rl = readline.createInterface({ input, terminal: false });
 
 const result = [];
 let lineCount = 0;
@@ -12,7 +14,7 @@ rl.once('line', (line1) => {
   rl.on('line', (lineRaw) => {
     const line = lineRaw.toString().trim();
     if (lineCount < length && line !== lastItem) {
-      result.push(result);
+      result.push(line);
       lastItem = line;
     }
     lineCount += 1;
@@ -20,6 +22,16 @@ rl.once('line', (line1) => {
 });
 
 rl.on('close', () => {
+  console.log({ result });
   process.stdout.write(Array.isArray(result) ? result.join('\n') : String(result));
 });
-
+// (async () => {
+//   // const inputLines = await input(1);
+//   const inputLines = fs.readFileSync('input.txt', 'utf8').split('\r\n');
+//   // const inputLines = ['3', 'Hello Hi', 'Bye Goodbye', 'List Array', 'Goodbye'];
+//   // const inputLines = input;
+//   console.log({ inputLines });
+//   const outputLines = inputProcessing(inputLines);
+//   console.log({ outputLines });
+//   // output(outputLines);
+// })();
