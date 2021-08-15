@@ -1,0 +1,17 @@
+{
+  "name": "yandex-interview",
+  "version": "1.0.0",
+  "description": "В этом репозитории представлены мои решения задач пробного этапа [Яндекс.Интервью](https://contest.yandex.ru/contest/8458) на языке JavaScript.",
+  "main": "contest.js",
+  "scripts": {
+    "test": "jest --passWithNoTests"
+  },
+  "author": "Alexander Rzhanitsyn",
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {}
+  },
+  "devDependencies": {
+    "jest": "^27.0.6"
+  }
+}
