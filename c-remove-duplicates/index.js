@@ -2,10 +2,11 @@ const readline = require('readline');
 const fs = require('fs');
 
 const input = fs.createReadStream('input.txt');
+const output = fs.createWriteStream('output.txt');
 const rl = readline.createInterface({ input, terminal: false });
 
-// const result = [];
 let lineCount = 0;
+let hackOutputPart = '';
 
 rl.once('line', (line1) => {
   let lastItem = null;
@@ -13,9 +14,15 @@ rl.once('line', (line1) => {
 
   rl.on('line', (lineRaw) => {
     const line = lineRaw.toString().trim();
+
     if (lineCount < length && line !== lastItem) {
-      console.log(`${line}\n`);
+      hackOutputPart += `${line}\n`;
+
       lastItem = line;
+    }
+    if (hackOutputPart.length > 100) {
+      output.write(`${hackOutputPart}\n`);
+      hackOutputPart = '';
     }
     lineCount += 1;
   });
