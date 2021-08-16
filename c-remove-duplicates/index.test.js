@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const inputProcessing = require('./index');
 
 const testData = [
@@ -11,8 +13,29 @@ const testData = [
   ],
 ];
 
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+afterAll(async () => {
+  try {
+    await fs.promises.unlink(path.join(__dirname, 'input.txt'));
+  } catch (error) { }
+  try {
+    await fs.promises.unlink(path.join(__dirname, 'output.txt'));
+  } catch (error) { }
+});
+
 testData.forEach(([input, output], index) => {
-  test(`${index + 1}`, () => {
-    expect(inputProcessing(input)).toStrictEqual(output);
+  test(`${index + 1}`, async () => {
+    fs.writeFileSync(path.join(__dirname, 'input.txt'), input.join('\n'));
+
+    inputProcessing();
+    await wait(50);
+
+    const outputFromFile = String(fs.readFileSync(path.join(__dirname, 'output.txt'), 'utf-8'))
+      .split('\n')
+      .filter(Boolean)
+      .map(Number);
+
+    expect(outputFromFile).toStrictEqual(output);
   });
 });

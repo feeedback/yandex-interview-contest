@@ -1,44 +1,32 @@
 const readline = require('readline');
 const fs = require('fs');
 
-const input = fs.createReadStream('input.txt');
-const output = fs.createWriteStream('output.txt');
-const rl = readline.createInterface({ input, terminal: false });
+module.exports = () => {
+  const input = fs.createReadStream(`${__dirname}/input.txt`);
+  const output = fs.createWriteStream(`${__dirname}/output.txt`);
+  const rl = readline.createInterface({ input, terminal: false });
 
-let lineCount = 0;
-let hackOutputPart = '';
+  let hackOutputPart = '';
 
-rl.once('line', (line1) => {
-  let lastItem = null;
-  const length = Number(line1.toString().trim());
+  rl.once('line', () => {
+    let lastItem = null;
 
-  rl.on('line', (lineRaw) => {
-    const line = lineRaw.toString().trim();
+    rl.on('line', (lineRaw) => {
+      const line = lineRaw.toString().trim();
 
-    if (lineCount < length && line !== lastItem) {
-      hackOutputPart += `${line}\n`;
+      if (line !== lastItem) {
+        hackOutputPart += `${line}\n`;
+      }
 
+      if (hackOutputPart.length > 1000) {
+        output.write(`${hackOutputPart}\n`);
+        hackOutputPart = '';
+      }
       lastItem = line;
-    }
-    if (hackOutputPart.length > 100) {
-      output.write(`${hackOutputPart}\n`);
-      hackOutputPart = '';
-    }
-    lineCount += 1;
-  });
-});
+    });
 
-// rl.on('close', () => {
-//   // console.log({ result });
-//   // process.stdout.write(Array.isArray(result) ? result.join('\n') : String(result));
-// });
-// (async () => {
-//   // const inputLines = await input(1);
-//   const inputLines = fs.readFileSync('input.txt', 'utf8').split('\r\n');
-//   // const inputLines = ['3', 'Hello Hi', 'Bye Goodbye', 'List Array', 'Goodbye'];
-//   // const inputLines = input;
-//   console.log({ inputLines });
-//   const outputLines = inputProcessing(inputLines);
-//   console.log({ outputLines });
-//   // output(outputLines);
-// })();
+    rl.on('close', () => {
+      output.write(hackOutputPart);
+    });
+  });
+};
