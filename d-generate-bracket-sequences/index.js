@@ -2,41 +2,37 @@ const readline = require('readline');
 const fs = require('fs');
 
 const input = fs.createReadStream('input.txt');
+const output = fs.createWriteStream('output.txt');
 const rl = readline.createInterface({ input, terminal: false });
 
-function generateBrackets(n) {
-  const output = fs.createWriteStream('output.txt');
-  let result = '';
+let outputLines = '';
 
-  function generate(n, str = '', l = 0, r = 0) {
-    if (str.length >= 2 * n) {
-      result += `${str}\n`;
+const generate = (length, str = '', left = 0, right = 0) => {
+  if (str.length >= 2 * length) {
+    outputLines += `${str}\n`;
 
-      if (result.length > 100) {
-        output.write(result);
-        result = '';
-      }
-
-      return;
+    if (outputLines.length > 1000) {
+      output.write(outputLines);
+      outputLines = '';
     }
 
-    if (l < n) {
-      generate(n, `${str}(`, l + 1, r);
-    }
-
-    if (r < l) {
-      generate(n, `${str})`, l, r + 1);
-    }
+    return;
   }
 
-  generate(n);
+  if (left < length) {
+    generate(length, `${str}(`, left + 1, right);
+  }
+  if (right < left) {
+    generate(length, `${str})`, left, right + 1);
+  }
+};
 
-  output.write(result);
-  output.end();
+function generateBrackets(length) {
+  generate(length);
 
-  output.on('finish', () => {});
+  output.write(outputLines);
 
-  return result.split('\n').slice(0, -1);
+  return outputLines.split('\n').slice(0, -1);
 }
 
 rl.once('line', (line) => {

@@ -1,7 +1,9 @@
-// const assert = require('assert').strict;
-// const generateBrackets = require('./index');
+const assert = require('assert').strict;
+const generateBrackets = require('./index');
 
-// assert.deepEqual(['(())', '()()'], generateBrackets(2));
+const x = generateBrackets(2);
+console.log(x);
+assert.deepEqual(['(())', '()()'], x);
 // assert.deepEqual(['((()))', '(()())', '(())()', '()(())', '()()()'], generateBrackets(3));
 
-// console.info('OK!');
+console.info('OK!');
