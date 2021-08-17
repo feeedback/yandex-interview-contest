@@ -16,12 +16,8 @@ const testData = [
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 afterAll(async () => {
-  try {
-    await fs.promises.unlink(path.join(__dirname, 'input.txt'));
-  } catch (error) { }
-  try {
-    await fs.promises.unlink(path.join(__dirname, 'output.txt'));
-  } catch (error) { }
+  fs.promises.unlink(path.join(__dirname, 'input.txt')).catch();
+  fs.promises.unlink(path.join(__dirname, 'output.txt')).catch();
 });
 
 testData.forEach(([input, output], index) => {
