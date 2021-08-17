@@ -1,44 +1,74 @@
-const readline = require('readline');
-const fs = require('fs');
+// const readline = require('readline');
+// const fs = require('fs');
 
-const input = fs.createReadStream('input.txt');
-const output = fs.createWriteStream('output.txt');
-const rl = readline.createInterface({ input, terminal: false });
+// const input = fs.createReadStream('input.txt');
+// const output = fs.createWriteStream('output.txt');
+// const rl = readline.createInterface({ input, terminal: false });
+const isValidSeq = (s) => {
+  let countOpen = 0;
 
-let outputLines = '';
-
-const generate = (length, str = '', left = 0, right = 0) => {
-  if (str.length >= 2 * length) {
-    outputLines += `${str}\n`;
-
-    if (outputLines.length > 1000) {
-      output.write(outputLines);
-      outputLines = '';
+  for (let i = 0; i < s.length; i++) {
+    // const char = s[i];
+    // console.log({ char });
+    if (!Number(s[i])) {
+      if (countOpen === 0) return false;
+    } else {
+      countOpen += 1;
     }
-
-    return;
   }
-
-  if (left < length) {
-    generate(length, `${str}(`, left + 1, right);
-  }
-  if (right < left) {
-    generate(length, `${str})`, left, right + 1);
-  }
+  return countOpen === 0;
 };
 
-function generateBrackets(length) {
-  generate(length);
+const generate = (n) => {
+  console.time();
+  const outputLines = [];
 
-  output.write(outputLines);
+  const length = n * 2;
+  // console.log(outputLines);
 
-  return outputLines.split('\n').slice(0, -1);
-}
+  // if (str.length >= 2 * length) {
+  //   outputLines.push(str);
 
-rl.once('line', (line) => {
-  const n = Number(line);
+  //   // if (outputLines.length > 1000) {
+  //   //   output.write(`${outputLines.join('\n')}\n`);
+  //   // }
 
-  generateBrackets(n);
-});
+  //   return;
+  // }
+  const min = 2 ** (length - 1);
+  const max = 2 ** length;
 
-module.exports = generateBrackets;
+  for (let num = min; num < max; num++) {
+    // const bit = num.toString(2);
+    const bit = num.toString(2);
+    // if (isValidSeq(bit)) {
+    // outputLines.push(bit.replaceAll('1', '(').replaceAll('0', ')'));
+    // }
+    // console.log({ num, bit });
+  }
+  // if (left < length) {
+  //   generate(length, `${str}(`, left + 1, right);
+  // }
+  // if (right < left) {
+  //   generate(length, `${str})`, left, right + 1);
+  // }
+
+  console.timeEnd();
+  return outputLines;
+};
+
+// function generateBrackets(length) {
+//   generate(length);
+
+//   output.write(outputLines.join('\n'));
+
+//   return outputLines;
+// }
+
+// rl.once('line', (line) => {
+//   const n = Number(line);
+
+//   generateBrackets(n);
+// });
+generate(11);
+// module.exports = generateBrackets;
