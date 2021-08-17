@@ -1,17 +1,34 @@
-// const readline = require('readline');
-// const fs = require('fs');
+/* eslint-disable default-case */
+const readline = require('readline');
+const fs = require('fs');
 
-// const input = fs.createReadStream('input.txt');
-// const output = fs.createWriteStream('output.txt');
-// const rl = readline.createInterface({ input, terminal: false });
-const isValidSeq = (s) => {
+const input = fs.createReadStream('input.txt');
+const output = fs.createWriteStream('output.txt');
+const rl = readline.createInterface({ input, terminal: false });
+
+const createBrackets = (arr) => {
+  let str = '';
+
+  for (let index = 0; index < arr.length; index++) {
+    if (arr[index] === 0) {
+      str += '(';
+    } else if (arr[index] === 1) {
+      str += ')';
+    }
+  }
+  return str;
+};
+
+const isValidSeq = (arr) => {
   let countOpen = 0;
 
-  for (let i = 0; i < s.length; i++) {
-    // const char = s[i];
-    // console.log({ char });
-    if (!Number(s[i])) {
-      if (countOpen === 0) return false;
+  for (let i = 0; i < arr.length; i++) {
+    if (!arr[i]) {
+      countOpen -= 1;
+
+      if (countOpen === 0) {
+        return false;
+      }
     } else {
       countOpen += 1;
     }
@@ -20,55 +37,46 @@ const isValidSeq = (s) => {
 };
 
 const generate = (n) => {
-  console.time();
-  const outputLines = [];
+  let outputLines = [];
 
   const length = n * 2;
-  // console.log(outputLines);
+  const max = 2 ** length - 1;
 
-  // if (str.length >= 2 * length) {
-  //   outputLines.push(str);
+  const bits = new Array(length).fill(0);
 
-  //   // if (outputLines.length > 1000) {
-  //   //   output.write(`${outputLines.join('\n')}\n`);
-  //   // }
+  const incBinaryNum = () => {
+    for (let i = length - 1; i >= 0; i--) {
+      if (bits[i] === 0) {
+        bits[i] = 1;
+        break;
+      }
+      if (bits[i] === 1) {
+        bits[i] = 0;
+      }
+    }
+  };
 
-  //   return;
-  // }
-  const min = 2 ** (length - 1);
-  const max = 2 ** length;
+  for (let num = 0; num < max; num++) {
+    if (isValidSeq(bits)) {
+      outputLines.push(createBrackets(bits));
 
-  for (let num = min; num < max; num++) {
-    // const bit = num.toString(2);
-    const bit = num.toString(2);
-    // if (isValidSeq(bit)) {
-    // outputLines.push(bit.replaceAll('1', '(').replaceAll('0', ')'));
-    // }
-    // console.log({ num, bit });
+      if (outputLines.length > 100) {
+        // hack for memory limit
+        output.write(`${outputLines.join('\n')}\n`);
+        outputLines = [];
+      }
+    }
+    incBinaryNum();
   }
-  // if (left < length) {
-  //   generate(length, `${str}(`, left + 1, right);
-  // }
-  // if (right < left) {
-  //   generate(length, `${str})`, left, right + 1);
-  // }
 
-  console.timeEnd();
   return outputLines;
 };
 
-// function generateBrackets(length) {
-//   generate(length);
+rl.once('line', (line) => {
+  const outputLines = generate(Number(line));
 
-//   output.write(outputLines.join('\n'));
+  output.write(`${outputLines.join('\n')}\n`);
+});
 
-//   return outputLines;
-// }
-
-// rl.once('line', (line) => {
-//   const n = Number(line);
-
-//   generateBrackets(n);
-// });
-generate(11);
-// module.exports = generateBrackets;
+// generate(3);
+module.exports = generate;
