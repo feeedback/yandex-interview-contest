@@ -2,6 +2,7 @@ const readline = require('readline');
 const fs = require('fs');
 
 module.exports = () => {
+  // delete upper line exports for contest
   const input = fs.createReadStream(`${__dirname}/input.txt`);
   const output = fs.createWriteStream(`${__dirname}/output.txt`);
   const rl = readline.createInterface({ input, terminal: false });
