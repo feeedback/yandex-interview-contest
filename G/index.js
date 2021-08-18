@@ -15,13 +15,15 @@
 // Общая сложность описанного алгоритма — O(n^2), где n — число городов.
 
 function inputProcessing(lines) {
-  const cityN = Number(lines[0]);
+  const cityN = Number(lines[0]); // (2 ≤ n ≤ 1000)
 
   const citiesXY = lines.slice(1, cityN + 1).map((yx) => yx.split(' ').map(Number));
-  const maxDistance = Number(lines[cityN + 1]);
+  const maxDistance = Number(lines[cityN + 1]); // > 0
   const [fromCityIndex, toCityIndex] = lines[cityN + 1 + 1].split(' ').map((n) => Number(n) - 1);
-
-  console.log({ cityN, citiesXY, maxDistance, fromCityIndex, toCityIndex });
+  if (fromCityIndex === toCityIndex) {
+    return 0;
+  }
+  // console.log({ cityN, citiesXY, maxDistance, fromCityIndex, toCityIndex });
 
   const paths = [];
 
@@ -29,38 +31,30 @@ function inputProcessing(lines) {
     paths[i] = new Array(cityN).fill(0);
 
     for (let j = i + 1; j < cityN; j++) {
-      console.log({ i, j });
-
       const [x1, y1] = citiesXY[i];
       const [x2, y2] = citiesXY[j];
 
       paths[i][j] = Math.abs(x1 - x2) + Math.abs(y1 - y2);
     }
   }
-  const queryDistance = paths[fromCityIndex][toCityIndex];
 
-  console.log('query way, m:', queryDistance);
-  if (queryDistance <= maxDistance) {
-    console.log('max way = 1');
-  }
-
-  console.log({ paths });
+  // console.log({ paths });
 
   const visited = new Map();
-  const minToFinishPath = [];
+  // const minToFinishPath = [];
   let minToFinish = Infinity;
 
   const recur = (current, path, ways) => {
     visited.set(current, true);
 
     const distToFinish = paths[Math.min(current, toCityIndex)][Math.max(current, toCityIndex)];
-    console.log('to finish need', distToFinish, 'but max', maxDistance);
+    // console.log('to finish need', distToFinish, 'but max', maxDistance);
 
     if (distToFinish <= maxDistance) {
       const pathEnd = [...path, toCityIndex];
-      console.log('finish');
-      console.log('last step', { current, toCityIndex, distToFinish, pathEnd });
-      minToFinishPath.push(pathEnd);
+      // console.log('finish');
+      // console.log('last step', { current, toCityIndex, distToFinish, pathEnd });
+      // minToFinishPath.push(pathEnd);
 
       if (pathEnd.length < minToFinish) {
         minToFinish = pathEnd.length;
@@ -72,16 +66,17 @@ function inputProcessing(lines) {
       if (index !== toCityIndex && !visited.get(index)) {
         const dist = paths[Math.min(current, index)][Math.max(current, index)];
 
-        if (dist <= maxDistance) {
-          console.log({ current, index, dist, path });
+        if (path.length < minToFinish && dist <= maxDistance) {
+          // console.log({ current, index, dist, path });
           visited.set(index, true);
           // console.log(path);
           const isFinish = recur(index, [...path, index], ways - 1);
 
           if (isFinish) {
-            const last = path.pop();
-            console.log({ last, index });
-            visited.set(last, false);
+            // const last = path.pop();
+            path.pop();
+            // console.log({ last, index });
+            visited.set(index, false);
           }
         }
       }
@@ -93,48 +88,11 @@ function inputProcessing(lines) {
   };
 
   recur(fromCityIndex, [fromCityIndex], cityN);
-  console.log(minToFinish, minToFinishPath);
-  // const set1 = new Set(lines.slice(1, cityN + 1).map(Number));
+  // console.log(minToFinish, minToFinishPath);
 
-  // let stoneJewelryCount = 0;
-  // const jewelsSet = new Set(jewels);
-
-  // for (let index = 0; index < stones.length; index++) {
-  //   if (jewelsSet.has(stones.charAt(index))) {
-  //     stoneJewelryCount += 1;
-  //   }
-  // }
-  // return stoneJewelryCount;
+  return minToFinish === Infinity ? -1 : minToFinish - 1;
 }
-// console.log(inputProcessing(['4', '0 0', '1 1', '1 0', '1 2', '1', '1 4']));
-// [
-//   [0, 1, 1, 2],
-//   [0, 0, 2, 1],
-//   [0, 0, 0, 1],
-//   [0, 0, 0, 0],
-// ];
-console.log(inputProcessing(['7', '0 0', '0 1', '0 2', '2 2', '2 -2', '2 -1', '-2 1', '2', '1 4']));
-// [
-//   [0, 1, 1, 2],
-//   [0, 0, 2, 1],
-//   [0, 0, 0, 1],
-//   [0, 0, 0, 0],
-// ];
-// [
-//   [0, 2, 4, 2, 4, 3, 3],
-//   [0, 0, 2, 4, 6, 5, 3],
-//   [0, 0, 0, 6, 4, 3, 1],
-//   [0, 0, 0, 0, 2, 3, 5],
-//   [0, 0, 0, 0, 0, 1, 3],
-//   [0, 0, 0, 0, 0, 0, 2],
-//   [0, 0, 0, 0, 0, 0, 0],
-// ];
-// [
-//   [0, 1, 4, 2, 4, 3, 3],
-//   [0, 0, 3, 3, 5, 4, 2],
-//   [0, 0, 0, 6, 4, 3, 1],
-//   [0, 0, 0, 0, 2, 3, 5],
-//   [0, 0, 0, 0, 0, 1, 3],
-//   [0, 0, 0, 0, 0, 0, 2],
-//   [0, 0, 0, 0, 0, 0, 0],
-// ];
+// console.log(inputProcessing(['7', '0 0', '0 2', '2 2', '0 -2', '2 -2', '2 -1', '2 1', '2', '1 3'])); // 1 - 2
+// console.log(inputProcessing(['4', '0 0', '1 0', '0 1', '1 1', '2', '1 4'])); // 2 - 1
+// console.log(inputProcessing(['4', '0 0', '2 0', '0 2', '2 2', '1', '1 4'])); // 3 - -1
+console.log(inputProcessing(['2', '3 0', '0 0', '3', '1 2'])); // ?
