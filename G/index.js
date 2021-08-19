@@ -23,26 +23,37 @@ function inputProcessing(lines) {
   if (fromCityIndex === toCityIndex) {
     return 0;
   }
-  // console.log({ cityN, citiesXY, maxDistance, fromCityIndex, toCityIndex });
+  console.log({ cityN, citiesXY, maxDistance, fromCityIndex, toCityIndex });
 
   const paths = [];
-
+  const adjacencyList = {};
   for (let i = 0; i < cityN; i++) {
     paths[i] = new Array(cityN).fill(0);
+    adjacencyList[i] = [];
 
-    for (let j = i + 1; j < cityN; j++) {
+    // for (let j = i + 1; j < cityN; j++) {
+    for (let j = 0; j < cityN; j++) {
+      if (i === j) {
+        continue;
+      }
       const [x1, y1] = citiesXY[i];
       const [x2, y2] = citiesXY[j];
+      const dist = Math.abs(x1 - x2) + Math.abs(y1 - y2);
 
-      paths[i][j] = Math.abs(x1 - x2) + Math.abs(y1 - y2);
+      if (dist <= maxDistance) {
+        // accos[i].push({ key: j, dist });
+        adjacencyList[i].push(j);
+      }
+      paths[i][j] = dist;
     }
   }
 
-  // console.log({ paths });
+  console.log(adjacencyList);
+  console.log({ paths });
 
   const visited = new Map();
-  // const minToFinishPath = [];
-  let minToFinish = Infinity;
+  const minToFinishPath = [];
+  // let minToFinish = Infinity;
 
   const recur = (current, path, ways) => {
     visited.set(current, true);
@@ -54,11 +65,11 @@ function inputProcessing(lines) {
       const pathEnd = [...path, toCityIndex];
       // console.log('finish');
       // console.log('last step', { current, toCityIndex, distToFinish, pathEnd });
-      // minToFinishPath.push(pathEnd);
+      minToFinishPath.push(pathEnd);
 
-      if (pathEnd.length < minToFinish) {
-        minToFinish = pathEnd.length;
-      }
+      // if (pathEnd.length < minToFinish) {
+      //   minToFinish = pathEnd.length;
+      // }
       return true;
     }
 
@@ -66,7 +77,7 @@ function inputProcessing(lines) {
       if (index !== toCityIndex && !visited.get(index)) {
         const dist = paths[Math.min(current, index)][Math.max(current, index)];
 
-        if (path.length < minToFinish && dist <= maxDistance) {
+        if (dist <= maxDistance) {
           // console.log({ current, index, dist, path });
           visited.set(index, true);
           // console.log(path);
@@ -83,16 +94,55 @@ function inputProcessing(lines) {
     }
     // console.log(path);
     return false;
-    // recur(current, [...path], ways - 1, visited);
-    // console.log('цикл кончился');
   };
 
   recur(fromCityIndex, [fromCityIndex], cityN);
-  // console.log(minToFinish, minToFinishPath);
+  console.log(minToFinishPath);
 
-  return minToFinish === Infinity ? -1 : minToFinish - 1;
+  function bfs(startKey, finishKey) {
+    const visited = new Set();
+    // let count = 1;
+    // let isFinished = false;
+    const queue = [startKey];
+    const counts = { [startKey]: 0 };
+
+    while (queue.length > 0) {
+      const node = queue.shift(); // mutates the queue
+      // count -= 1;
+      const destinations = adjacencyList[node];
+
+      for (const destination of destinations) {
+        // console.log(counts[node], node);
+        counts[destination] = counts[node] + 1;
+
+        if (destination === finishKey) {
+          visited.add(destination);
+          // count += 1;
+          // console.log('FINISH', { destination, count });
+          // return count;
+          // isFinished = true;
+
+          console.log(counts);
+          return counts[destination];
+        }
+
+        if (!visited.has(destination)) {
+          visited.add(destination);
+          queue.push(destination);
+          // console.log({ destination, count });
+          // count += 1;
+        }
+      }
+    }
+    return -1;
+  }
+
+  // console.log(bfs(fromCityIndex, toCityIndex));
+  return bfs(fromCityIndex, toCityIndex);
+  // return minToFinish === Infinity ? -1 : minToFinish - 1;
 }
 // console.log(inputProcessing(['7', '0 0', '0 2', '2 2', '0 -2', '2 -2', '2 -1', '2 1', '2', '1 3'])); // 1 - 2
 // console.log(inputProcessing(['4', '0 0', '1 0', '0 1', '1 1', '2', '1 4'])); // 2 - 1
-// console.log(inputProcessing(['4', '0 0', '2 0', '0 2', '2 2', '1', '1 4'])); // 3 - -1
-console.log(inputProcessing(['2', '3 0', '0 0', '3', '1 2'])); // ?
+console.log(inputProcessing(['4', '0 0', '2 0', '0 2', '2 2', '1', '1 4'])); // 3 - -1
+// console.log(inputProcessing(['2', '3 0', '0 0', '3', '1 2'])); // ?
+//
