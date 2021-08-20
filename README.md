@@ -8,3 +8,5 @@
 - [D. Генерация скобочных последовательностей](https://github.com/feeedback/yandex-interview/tree/main/D)
 - [E. Анаграммы](https://github.com/feeedback/yandex-interview/tree/main/E)
 - [G. Интересное путешествие](https://github.com/feeedback/yandex-interview/tree/main/G)
+
+Для запуска тестов: `npm test`
