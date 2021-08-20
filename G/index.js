@@ -13,6 +13,35 @@
 // исходного города, поэтому следует вывести -1.
 
 // Общая сложность описанного алгоритма — O(n^2), где n — число городов.
+function getDistanceBetween(a, b) {
+  const [x1, y1] = a;
+  const [x2, y2] = b;
+
+  return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+}
+
+function bfs(startKey, finishKey, keysCount, fnCheckEdgeExist) {
+  const visited = new Set();
+  const queue = [[startKey, 0]];
+  visited.add(startKey);
+
+  while (queue.length > 0) {
+    const [currentKey, count] = queue.shift();
+
+    if (currentKey === finishKey) {
+      return count;
+    }
+
+    for (let key = 0; key < keysCount; key++) {
+      // вместо графа используем простой цикл, т.к. "Дороги есть между всеми парами городов."
+      if (!visited.has(key) && fnCheckEdgeExist(currentKey, key)) {
+        queue.push([key, count + 1]);
+        visited.add(key);
+      }
+    }
+  }
+  return -1;
+}
 
 function inputProcessing(lines) {
   const cityN = Number(lines[0]); // (2 ≤ n ≤ 1000)
@@ -21,40 +50,16 @@ function inputProcessing(lines) {
   const maxDistance = Number(lines[cityN + 1]); // >= 1
   const [fromCityIndex, toCityIndex] = lines[cityN + 1 + 1].split(' ').map((n) => Number(n) - 1); // >= 1
 
-  const getDistance = (a, b) => {
-    const [x1, y1] = a;
-    const [x2, y2] = b;
-    return Math.abs(x1 - x2) + Math.abs(y1 - y2);
-  };
-
-  function bfs(startKey, finishKey) {
-    const visited = new Set();
-    const queue = [[startKey, 0]];
-    visited.add(startKey);
-
-    while (queue.length > 0) {
-      const [currentKey, count] = queue.shift();
-
-      if (currentKey === finishKey) {
-        return count;
-      }
-
-      for (let key = 0; key < cityN; key++) {
-        if (!visited.has(key) && getDistance(citiesXY[currentKey], citiesXY[key]) <= maxDistance) {
-          queue.push([key, count + 1]);
-          visited.add(key);
-        }
-      }
-    }
-    return -1;
+  if (fromCityIndex === toCityIndex) {
+    return 0;
   }
 
-  return bfs(fromCityIndex, toCityIndex);
+  return bfs(
+    fromCityIndex,
+    toCityIndex,
+    cityN,
+    (keyA, keyB) => getDistanceBetween(citiesXY[keyA], citiesXY[keyB]) <= maxDistance
+  );
 }
 
-console.log(inputProcessing(['7', '0 0', '0 2', '2 2', '0 -2', '2 -2', '2 -1', '2 1', '2', '1 5'])); // 2  №1
-console.log(inputProcessing(['4', '0 0', '1 0', '0 1', '1 1', '2', '1 4'])); // 1  №2
-console.log(inputProcessing(['4', '0 0', '2 0', '0 2', '2 2', '1', '1 4'])); // -1  №3
-console.log(inputProcessing(['3', '3 0', '0 0', '1 0', '2', '1 1'])); // 2 test start = finish
-console.log(inputProcessing(['3', '3 0', '0 0', '1 0', '3', '1 1'])); // 2 test start = finish
-console.log(inputProcessing(['3', '3 0', '0 0', '1 0', '1', '1 1'])); // -1 test start = finish
+module.exports = inputProcessing;
