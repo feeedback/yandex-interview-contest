@@ -9,4 +9,9 @@
 - [E. Анаграммы](https://github.com/feeedback/yandex-interview-contest/tree/main/E)
 - [G. Интересное путешествие](https://github.com/feeedback/yandex-interview-contest/tree/main/G)
 
-Для запуска тестов: `npm test`
+**Для запуска тестов**: `npm test`
+
+**Как отправляю решение в Я.Контест:**
+
+- Если решение без вывода понемногу в функции логики, то копирую содержимое файла [`contest-io-template.js`](https://github.com/feeedback/yandex-interview-contest/tree/main/contest-io-template.js)
+- Копирую и вставляю ниже функцию с получения решения `inputProcessing` из `[папки]/index.js` (*если оно обернуто в функцию для работоспособности тестов, то убираю лишнее*)
