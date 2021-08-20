@@ -1,6 +1,6 @@
 ## Яндекс.Контест. Подготовка к собеседованию
 
-В этом репозитории представлены мои решения задач [подготовки к собеседованию от Яндекса](https://contest.yandex.ru/contest/8458) на языке JavaScript.
+Мои решения задач [Подготовка к собеседованию от Яндекса](https://contest.yandex.ru/contest/8458), на языке JavaScript.
 
 - [A. Камни и украшения](https://github.com/feeedback/yandex-interview/tree/main/A)
 - [B. Последовательно идущие единицы](https://github.com/feeedback/yandex-interview/tree/main/B)
