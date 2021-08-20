@@ -17,3 +17,5 @@ rl.on('close', () => {
   const outputLines = inputProcessing(inputLines);
   process.stdout.write(Array.isArray(outputLines) ? outputLines.join('\n') : String(outputLines));
 });
+
+// PASTE TO THIS LINE definition function inputProcessing
