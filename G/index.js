@@ -21,48 +21,28 @@ function inputProcessing(lines) {
   const maxDistance = Number(lines[cityN + 1]); // >= 1
   const [fromCityIndex, toCityIndex] = lines[cityN + 1 + 1].split(' ').map((n) => Number(n) - 1); // >= 1
 
-  const paths = [];
-  const adjacencyList = {};
-  for (let i = 0; i < cityN; i++) {
-    paths[i] = new Array(cityN).fill(0);
-    adjacencyList[i] = [];
-
-    // for (let j = i + 1; j < cityN; j++) {
-    for (let j = 0; j < cityN; j++) {
-      if (i === j) {
-        continue;
-      }
-      const [x1, y1] = citiesXY[i];
-      const [x2, y2] = citiesXY[j];
-      const dist = Math.abs(x1 - x2) + Math.abs(y1 - y2);
-
-      if (dist <= maxDistance) {
-        adjacencyList[i].push(j);
-      }
-      paths[i][j] = dist;
-    }
-  }
+  const getDistance = (a, b) => {
+    const [x1, y1] = a;
+    const [x2, y2] = b;
+    return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+  };
 
   function bfs(startKey, finishKey) {
     const visited = new Set();
-    const queue = [startKey];
-    const counts = { [startKey]: 0 };
+    const queue = [[startKey, 0]];
+    visited.add(startKey);
 
     while (queue.length > 0) {
-      const node = queue.shift();
-      const destinations = adjacencyList[node];
+      const [currentKey, count] = queue.shift();
 
-      for (const destination of destinations) {
-        counts[destination] = counts[node] + 1;
+      if (currentKey === finishKey) {
+        return count;
+      }
 
-        if (destination === finishKey) {
-          visited.add(destination);
-          return counts[destination];
-        }
-
-        if (!visited.has(destination)) {
-          visited.add(destination);
-          queue.push(destination);
+      for (let key = 0; key < cityN; key++) {
+        if (!visited.has(key) && getDistance(citiesXY[currentKey], citiesXY[key]) <= maxDistance) {
+          queue.push([key, count + 1]);
+          visited.add(key);
         }
       }
     }
