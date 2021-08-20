@@ -1,6 +1,4 @@
-function inputProcessing(lines) {
-  const [jewels, stones] = lines;
-
+function stoneJewelryCalc(jewels = 0, stones = 0) {
   let stoneJewelryCount = 0;
   const jewelsSet = new Set(jewels);
 
@@ -10,6 +8,12 @@ function inputProcessing(lines) {
     }
   }
   return stoneJewelryCount;
+}
+
+function inputProcessing(lines) {
+  const [jewels, stones] = lines;
+
+  return stoneJewelryCalc(jewels, stones);
 }
 
 module.exports = inputProcessing;
