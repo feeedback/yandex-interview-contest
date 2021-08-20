@@ -2,7 +2,6 @@
   "name": "yandex-interview",
   "version": "1.0.0",
   "description": "",
-  "main": "contest.js",
   "scripts": {
     "test": "jest --passWithNoTests"
   },
